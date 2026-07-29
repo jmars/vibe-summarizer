@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vibe-summarizer"
+dynamic = ["version"]
+description = "LLM-powered session and transcript summarizer — provider-agnostic, OpenAI-compatible API"
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "Jaye Marshall", email = "jaye@nexteam.co.uk"},
+]
+keywords = ["summarizer", "llm", "session", "transcript", "meeting", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "requests>=2.25,<3",
+    "defusedxml>=0.7,<1",
+]
+
+[project.urls]
+Homepage = "https://github.com/jmars/vibe-summarizer"
+Repository = "https://github.com/jmars/vibe-summarizer"
+Issues = "https://github.com/jmars/vibe-summarizer/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+]
+
+[project.scripts]
+session-summarizer = "vibe_summarizer.__main__:main_session"
+transcript-summarizer = "vibe_summarizer.__main__:main_transcript"
+
+[tool.hatch.version]
+path = "src/vibe_summarizer/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vibe_summarizer"]
