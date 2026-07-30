@@ -6,14 +6,14 @@ structured summary, and writes ``summary.json``.
 
 Usage as library::
 
-    from vibe_summarizer.session import summarize
+    from summarizer.session import summarize
 
     summarize(Path("/path/to/session_dir"))
 
-Configuration via environment variables: see ``vibe_summarizer.llm``.
+Configuration via environment variables: see ``summarizer.llm``.
 
-Session directory defaults to ``$XDG_DATA_HOME/vibe/sessions`` or
-``~/.local/share/vibe/sessions``. Override with ``SUMMARIZER_SESSION_ROOT``.
+Session directory defaults to ``$XDG_DATA_HOME/palimpsest/sessions`` or
+``~/.local/share/palimpsest/sessions``. Override with ``SUMMARIZER_SESSION_ROOT``.
 """
 
 import json
@@ -23,7 +23,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from vibe_summarizer.llm import call as llm_call
+from summarizer.llm import call as llm_call
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -34,7 +34,7 @@ SESSION_ROOT = Path(
         "SUMMARIZER_SESSION_ROOT",
         os.path.join(
             os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local" / "share")),
-            "vibe",
+            "palimpsest",
             "sessions",
         ),
     )

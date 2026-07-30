@@ -1,4 +1,4 @@
-"""CLI entry points for vibe-summarizer.
+"""CLI entry points for the summarizer package.
 
 Two commands are registered via ``pyproject.toml`` ``[project.scripts]``:
 
@@ -46,7 +46,7 @@ def _session_cli() -> argparse.ArgumentParser:
 
 def main_session() -> None:
     """CLI entry point: session-summarizer."""
-    from vibe_summarizer.session import SESSION_ROOT, summarize, summarize_all
+    from summarizer.session import SESSION_ROOT, summarize, summarize_all
 
     parser = _session_cli()
     args = parser.parse_args()
@@ -63,6 +63,7 @@ def main_session() -> None:
             candidates = sorted(SESSION_ROOT.glob(f"{args.session_dir}*"))
             if candidates:
                 session_path = candidates[0]
+                _validate_within_root(session_path, SESSION_ROOT)
             else:
                 print(f"Session not found: {args.session_dir}", file=sys.stderr)
                 sys.exit(1)
@@ -118,7 +119,7 @@ def _transcript_cli() -> argparse.ArgumentParser:
 
 def main_transcript() -> None:
     """CLI entry point: transcript-summarizer."""
-    from vibe_summarizer.transcript import (
+    from summarizer.transcript import (
         TRANSCRIPT_DIR,
         summarize,
         summarize_all,
@@ -155,9 +156,9 @@ def main_transcript() -> None:
 
 
 if __name__ == "__main__":
-    # Allow running as: python -m vibe_summarizer [session|transcript] ...
+    # Allow running as: python -m summarizer [session|transcript] ...
     if len(sys.argv) < 2:
-        print("Usage: python -m vibe_summarizer [session|transcript] ...", file=sys.stderr)
+        print("Usage: python -m summarizer [session|transcript] ...", file=sys.stderr)
         sys.exit(1)
     cmd = sys.argv[1]
     sys.argv = [sys.argv[0]] + sys.argv[2:]

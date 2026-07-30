@@ -6,11 +6,11 @@ summary, and writes ``.summary.json`` alongside the transcript.
 
 Usage as library::
 
-    from vibe_summarizer.transcript import summarize
+    from summarizer.transcript import summarize
 
     summarize(Path("/path/to/transcript.txt"))
 
-Configuration via environment variables: see ``vibe_summarizer.llm``.
+Configuration via environment variables: see ``summarizer.llm``.
 
 Transcript directory defaults to ``~/Dropbox/Apps/Tactiq.io``. Override with
 ``SUMMARIZER_TRANSCRIPT_DIR``.
@@ -32,7 +32,7 @@ except ImportError:  # pragma: no cover
     SafeParseError = ET.ParseError  # type: ignore[assignment,misc]
     safe_parse = ET.parse  # type: ignore[assignment]
 
-from vibe_summarizer.llm import call as llm_call
+from summarizer.llm import call as llm_call
 
 # ---------------------------------------------------------------------------
 # Configuration

@@ -11,7 +11,7 @@ Configure via environment variables::
 
 Or pass parameters directly to ``call()``::
 
-    from vibe_summarizer.llm import call
+    from summarizer.llm import call
 
     result = call(
         system_prompt="You are a summarizer.",
@@ -27,37 +27,56 @@ import os
 import re
 import sys
 from datetime import datetime, timezone
+from ipaddress import ip_address
 from urllib.parse import urlparse
 
 import requests
 
 
-_ALLOWED_SCHEMES = {"https"}
-# localhost allowed for Ollama / LM Studio; 127.0.0.1 for loopback
 _LOOPBACK_HOSTS = {"localhost", "127.0.0.1", "::1"}
 
 
 def _validate_api_url(api_url: str) -> None:
-    """Validate *api_url* to prevent SSRF and enforce HTTPS.
+    """Validate *api_url* to prevent SSRF.
 
-    Raises ``ValueError`` if the URL scheme is not allowed or the host
-    is a private/reserved address (except loopback for local dev).
+    - HTTPS is required for non-loopback hosts.
+    - HTTP is allowed for localhost / loopback (Ollama, LM Studio).
+    - Raw IP addresses are rejected unless they are loopback.
+
+    Raises ``ValueError`` on invalid URLs.
     """
     parsed = urlparse(api_url)
-    if parsed.scheme not in _ALLOWED_SCHEMES:
+
+    if not parsed.hostname:
+        raise ValueError(f"Invalid API URL: no hostname found in {api_url!r}")
+
+    hostname = parsed.hostname.lower()
+    is_loopback = hostname in _LOOPBACK_HOSTS
+
+    # Check if it's an IP address — if so, it must be loopback
+    try:
+        addr = ip_address(hostname)
+    except ValueError:
+        addr = None  # not an IP — hostname, fine
+
+    if addr is not None and not addr.is_loopback:
         raise ValueError(
-            f"Only HTTPS URLs are allowed for API endpoints "
-            f"(got {parsed.scheme!r}). Use localhost for local models."
+            f"IP addresses are not allowed as API hosts (got {hostname!r}). "
+            f"Use a hostname or localhost."
         )
-    # DNS rebinding / SSRF: forbid raw IPs unless loopback
-    hostname = (parsed.hostname or "").lower()
-    if hostname and not hostname.endswith(tuple(_LOOPBACK_HOSTS)):
-        # block bare IPv4 / IPv6 addresses
-        if re.match(r"^(\d{1,3}\.){3}\d{1,3}$", hostname) or hostname.startswith("["):
-            raise ValueError(
-                f"IP addresses are not allowed as API hosts (got {hostname!r}). "
-                f"Use a hostname or localhost."
-            )
+    if addr is not None and addr.is_loopback:
+        is_loopback = True
+
+    if parsed.scheme == "http" and not is_loopback:
+        raise ValueError(
+            f"HTTP is only allowed for loopback hosts (got {parsed.scheme!r} "
+            f"for {hostname!r}). Use HTTPS or localhost."
+        )
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(
+            f"Unsupported scheme {parsed.scheme!r}. Use https:// or http:// "
+            f"(the latter only for localhost)."
+        )
 
 
 def _chat_url(api_url: str) -> str:

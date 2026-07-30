@@ -1,4 +1,4 @@
-"""Tests for vibe_summarizer.session — session summarizer."""
+"""Tests for summarizer.session — session summarizer."""
 
 import json
 import os
@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from vibe_summarizer import session
+from summarizer import session
 
 
 class TestMessageParsing:
@@ -198,7 +198,7 @@ class TestSessionRoot:
         monkeypatch.setenv("SUMMARIZER_SESSION_ROOT", "/custom/sessions")
         # Re-import to pick up new env
         import importlib
-        import vibe_summarizer.session as sess
+        import summarizer.session as sess
         importlib.reload(sess)
         assert str(sess.SESSION_ROOT) == "/custom/sessions"
 

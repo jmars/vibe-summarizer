@@ -1,11 +1,11 @@
-# Vibe Summarizer
+# Session & Transcript Summarizer
 
 **LLM-powered session and transcript summarizer** — provider-agnostic, works with any OpenAI-compatible API.
 
 ## Quick Start
 
 ```bash
-pip install git+https://github.com/jmars/vibe-summarizer
+pip install git+https://github.com/palimpsest-labs/summarizer
 ```
 
 ### Configuration
@@ -37,8 +37,8 @@ session-summarizer --batch --max 10
 session-summarizer --dry-run session_2026-07-29
 ```
 
-By default, session data is read from `$XDG_DATA_HOME/vibe/sessions` or
-`~/.local/share/vibe/sessions`. Override with `SUMMARIZER_SESSION_ROOT`.
+By default, session data is read from `$XDG_DATA_HOME/palimpsest/sessions` or
+`~/.local/share/palimpsest/sessions`. Override with `SUMMARIZER_SESSION_ROOT`.
 
 ### Summarize a Meeting Transcript
 
@@ -95,8 +95,8 @@ By default, transcripts are read from `~/Dropbox/Apps/Tactiq.io`. Override with
 
 ```python
 from pathlib import Path
-from vibe_summarizer.session import summarize, extract_digest, build_prompt
-from vibe_summarizer.llm import call
+from summarizer.session import summarize, extract_digest, build_prompt
+from summarizer.llm import call
 
 # Extract a digest from a session
 digest = extract_digest(Path("/path/to/session"))
@@ -129,7 +129,7 @@ data alone — no API call needed.
 | `SUMMARIZER_API_URL` | `https://api.openai.com/v1` | Base URL for chat completions API |
 | `SUMMARIZER_API_KEY` | *(required)* | Bearer token for API authentication |
 | `SUMMARIZER_MODEL` | `gpt-4o-mini` | Model name passed to the API |
-| `SUMMARIZER_SESSION_ROOT` | `~/.local/share/vibe/sessions` | Directory containing session folders |
+| `SUMMARIZER_SESSION_ROOT` | `~/.local/share/palimpsest/sessions` | Directory containing session folders |
 | `SUMMARIZER_TRANSCRIPT_DIR` | `~/Dropbox/Apps/Tactiq.io` | Directory containing transcript files |
 
 ## Security

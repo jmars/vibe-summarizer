@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "vibe-summarizer"
+name = "summarizer"
 dynamic = ["version"]
 description = "LLM-powered session and transcript summarizer — provider-agnostic, OpenAI-compatible API"
 license = {text = "MIT"}
@@ -31,9 +31,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jmars/vibe-summarizer"
-Repository = "https://github.com/jmars/vibe-summarizer"
-Issues = "https://github.com/jmars/vibe-summarizer/issues"
+Homepage = "https://github.com/palimpsest-labs/summarizer"
+Repository = "https://github.com/palimpsest-labs/summarizer"
+Issues = "https://github.com/palimpsest-labs/summarizer/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -42,11 +42,11 @@ dev = [
 ]
 
 [project.scripts]
-session-summarizer = "vibe_summarizer.__main__:main_session"
-transcript-summarizer = "vibe_summarizer.__main__:main_transcript"
+session-summarizer = "summarizer.__main__:main_session"
+transcript-summarizer = "summarizer.__main__:main_transcript"
 
 [tool.hatch.version]
-path = "src/vibe_summarizer/__init__.py"
+path = "src/summarizer/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/vibe_summarizer"]
+packages = ["src/summarizer"]

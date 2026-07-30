@@ -1,4 +1,4 @@
-"""Tests for vibe_summarizer.transcript — transcript summarizer."""
+"""Tests for summarizer.transcript — transcript summarizer."""
 
 import json
 import tempfile
@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from vibe_summarizer import transcript
+from summarizer import transcript
 
 
 SAMPLE_TXT = """Meeting: Standup
@@ -118,7 +118,7 @@ class TestTranscriptDir:
     def test_env_var_override(self, monkeypatch):
         monkeypatch.setenv("SUMMARIZER_TRANSCRIPT_DIR", "/custom/transcripts")
         import importlib
-        import vibe_summarizer.transcript as tmod
+        import summarizer.transcript as tmod
         importlib.reload(tmod)
         assert str(tmod.TRANSCRIPT_DIR) == "/custom/transcripts"
 
