@@ -44,6 +44,7 @@ dev = [
 [project.scripts]
 session-summarizer = "summarizer.__main__:main_session"
 transcript-summarizer = "summarizer.__main__:main_transcript"
+web-archive-summarizer = "summarizer.__main__:main_web_archive"
 
 [tool.hatch.version]
 path = "src/summarizer/__init__.py"

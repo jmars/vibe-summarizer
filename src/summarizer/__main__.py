@@ -155,8 +155,65 @@ def main_transcript() -> None:
         sys.exit(1)
 
 
+def _web_archive_cli() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(description="Summarize web archive entries via LLM")
+    p.add_argument(
+        "file", nargs="?", default=None,
+        help="Web-archive .jsonl file to summarize",
+    )
+    p.add_argument(
+        "--batch", action="store_true",
+        help="Process all unsummarized archive entries",
+    )
+    p.add_argument(
+        "--max", type=int, default=0, dest="max_entries",
+        help="Maximum entries to process in batch mode (default: unlimited)",
+    )
+    p.add_argument(
+        "--dry-run", action="store_true",
+        help="Preview prompt without calling the LLM",
+    )
+    return p
+
+
+def main_web_archive() -> None:
+    """CLI entry point: web-archive-summarizer."""
+    from summarizer.web_archive import (
+        ARCHIVE_ROOT,
+        summarize,
+        summarize_all,
+    )
+
+    parser = _web_archive_cli()
+    args = parser.parse_args()
+
+    if args.batch:
+        gen, skip = summarize_all(dry_run=args.dry_run, max_entries=args.max_entries)
+        print(f"Generated: {gen}, Already summarized: {skip}")
+    elif args.file:
+        tp = Path(args.file)
+        if not tp.is_absolute():
+            tp = ARCHIVE_ROOT / args.file
+        _validate_within_root(tp, ARCHIVE_ROOT)
+        if not tp.is_file():
+            print(f"Archive entry not found: {args.file}", file=sys.stderr)
+            sys.exit(1)
+        ok = summarize(tp, dry_run=args.dry_run)
+        if ok:
+            print(f"Done: {tp.name}")
+        else:
+            print("Failed.", file=sys.stderr)
+            sys.exit(1)
+    else:
+        print(
+            "Usage: web-archive-summarizer <file> | --batch [--max N] | --dry-run <file>",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
 if __name__ == "__main__":
-    # Allow running as: python -m summarizer [session|transcript] ...
+    # Allow running as: python -m summarizer [session|transcript|web-archive] ...
     if len(sys.argv) < 2:
         print("Usage: python -m summarizer [session|transcript] ...", file=sys.stderr)
         sys.exit(1)
@@ -166,6 +223,8 @@ if __name__ == "__main__":
         main_session()
     elif cmd == "transcript":
         main_transcript()
+    elif cmd == "web-archive":
+        main_web_archive()
     else:
         print(f"Unknown command: {cmd}", file=sys.stderr)
         sys.exit(1)
